@@ -1,3 +1,4 @@
+DEBUG = 0
 OBJ = \
 	charset.o jymain.o luafun.o mainmap.o piccache.o sdlfun.o
 
@@ -8,7 +9,7 @@ CC = $(OD_TOOLCHAIN)bin/aarch64-buildroot-linux-gnu-gcc
 CXX = $(OD_TOOLCHAIN)bin/aarch64-buildroot-linux-gnu-g++
 TARGET = jysdllua
 
-BASEFLAGS = -g3 -D_DEBUG=1
+BASEFLAGS = -g3 -D_DEBUG=0
 #BASEFLAGS = -s -O3
 SYSROOT     := $(shell $(CC) --print-sysroot)
 SDL_CFLAGS  := $(shell $(SYSROOT)/usr/bin/sdl-config --cflags)
