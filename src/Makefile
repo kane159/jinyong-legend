@@ -3,10 +3,9 @@ OBJ = \
 
 HEADERS = \
 	config.h list.h luafun.h
-
-CC = gcc
-CXX = g++
-
+OD_TOOLCHAIN ?= /opt/aarch64-buildroot-linux-gnu_sdk-buildroot/
+CC = $(OD_TOOLCHAIN)bin/aarch64-buildroot-linux-gnu-gcc
+CXX = $(OD_TOOLCHAIN)bin/aarch64-buildroot-linux-gnu-g++
 TARGET = jysdllua
 
 BASEFLAGS = -g3 -D_DEBUG=1
