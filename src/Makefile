@@ -17,7 +17,7 @@ SDL_LIBS    := $(shell $(SYSROOT)/usr/bin/sdl-config --libs)
 
 CFLAGS = ${BASEFLAGS} $(SDL_CFLAGS)
 ifeq ($(DEBUG),1)
-  CFLAGS += -I/usr/include/lua5.1/
+  CFLAGS += lua5.1
 endif
 LDFLAGS = ${BASEFLAGS} $(SDL_LIBS) -lSDL_image -lSDL_mixer -lSDL_ttf
 ifeq ($(DEBUG),1)
