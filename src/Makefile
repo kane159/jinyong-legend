@@ -8,11 +8,22 @@ CC = $(OD_TOOLCHAIN)bin/aarch64-buildroot-linux-gnu-gcc
 CXX = $(OD_TOOLCHAIN)bin/aarch64-buildroot-linux-gnu-g++
 TARGET = jysdllua
 
-BASEFLAGS = -g3 -D_DEBUG=1
+BASEFLAGS = -g3 -D_DEBUG=0
 #BASEFLAGS = -s -O3
+SYSROOT     := $(shell $(CC) --print-sysroot)
+SDL_CFLAGS  := $(shell $(SYSROOT)/usr/bin/sdl-config --cflags)
+SDL_LIBS    := $(shell $(SYSROOT)/usr/bin/sdl-config --libs)
 
-CFLAGS = ${BASEFLAGS} `sdl-config --cflags` -I/usr/include/lua5.1 -I/usr/include/smpeg
-LDFLAGS = ${BASEFLAGS} `sdl-config --libs` -lSDL_image -lSDL_mixer -lSDL_ttf -llua5.1
+CFLAGS = ${BASEFLAGS} $(SDL_CFLAGS)
+ifeq ($(DEBUG),1)
+  CFLAGS += -I/usr/include/lua5.1/
+endif
+LDFLAGS = ${BASEFLAGS} $(SDL_LIBS) -lSDL_image -lSDL_mixer -lSDL_ttf
+ifeq ($(DEBUG),1)
+  LDFLAGS += -llua5.1
+else
+  LDFLAGS += -llua
+endif
 
 #CFLAGS += -DHAS_SDL_MPEG=1
 #LDFLAGS += -lsmpeg
