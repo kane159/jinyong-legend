@@ -1,4 +1,4 @@
-DEBUG = 0
+DEBUG = 1
 OBJ = \
 	charset.o jymain.o luafun.o mainmap.o piccache.o sdlfun.o
 
