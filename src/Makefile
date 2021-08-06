@@ -24,6 +24,7 @@ ifeq ($(DEBUG),1)
   LDFLAGS += -llua5.1
 else
   LDFLAGS += -llua
+endif
 #CFLAGS += -DHAS_SDL_MPEG=1
 #LDFLAGS += -lsmpeg
 
