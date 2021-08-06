@@ -19,12 +19,7 @@ CFLAGS = ${BASEFLAGS} $(SDL_CFLAGS)
 ifeq ($(DEBUG),1)
   CFLAGS += -I/usr/include/lua5.1/
 endif
-LDFLAGS = ${BASEFLAGS} $(SDL_LIBS) -lSDL_image -lSDL_mixer -lSDL_ttf
-ifeq ($(DEBUG),1)
-  LDFLAGS += -llua5.1
-else
-  LDFLAGS += -llua
-endif
+LDFLAGS = ${BASEFLAGS} $(SDL_LIBS) -lSDL_image -lSDL_mixer -lSDL_ttf -llua
 
 #CFLAGS += -DHAS_SDL_MPEG=1
 #LDFLAGS += -lsmpeg
