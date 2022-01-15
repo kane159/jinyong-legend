@@ -12,6 +12,7 @@
 // 全程变量
 
 SDL_Surface* g_Surface=NULL;    // 游戏使用的视频表面
+SDL_Surface* g_Surfacetmp=NULL;
 Uint32 g_MaskColor32=0x706020;      // 透明色
 
 int g_Rotate=0;              //屏幕是否旋转
