@@ -18,6 +18,7 @@ extern int g_MAXCacheNum;                   // 最大Cache个数
 extern Uint32 g_MaskColor32;      // 透明色
 
 extern SDL_Surface* g_Surface;        // 游戏使用的视频表面
+extern SDL_Surface* g_Surfacetmp;
 extern int g_Rotate;
 extern int g_ScreenW ;
 extern int g_ScreenH ;
