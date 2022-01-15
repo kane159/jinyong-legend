@@ -187,7 +187,7 @@ int InitGame(void)
 
 
     if(g_FullScreen==0){
-        g_Surface=SDL_SetVideoMode(w,h, 0, SDL_HWSURFACE|SDL_DOUBLEBUF);
+        g_Surface=SDL_SetVideoMode(w,h, 0, SDL_HWSURFACE);
 	g_Surfacetmp = SDL_CreateRGBSurface(SDL_HWSURFACE, w, h, 16,  0xF800, 0x7E0, 0x1F, 0);
 	    }
 	else
@@ -285,7 +285,7 @@ int JY_LoadPicture(const char* str,int x,int y)
 		}
 
 		SDL_BlitSurface(pic, NULL, g_Surfacetmp, &r);
-		//SDL_BlitSurface(g_Surfacetmp, NULL, g_Surface, &r);
+		SDL_BlitSurface(g_Surfacetmp, NULL, g_Surface, &r);
 
 	}
 	else{
