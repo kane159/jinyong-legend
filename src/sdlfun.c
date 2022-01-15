@@ -285,7 +285,7 @@ int JY_LoadPicture(const char* str,int x,int y)
 		}
 
 		SDL_BlitSurface(pic, NULL, g_Surfacetmp, &r);
-		SDL_BlitSurface(g_Surfacetmp, NULL, g_Surface, &r);
+		//SDL_BlitSurface(g_Surfacetmp, NULL, g_Surface, &r);
 
 	}
 	else{
