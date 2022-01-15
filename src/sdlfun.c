@@ -187,8 +187,8 @@ int InitGame(void)
 
 
     if(g_FullScreen==0){
-        g_Surface=SDL_SetVideoMode(w,h, 0, SDL_HWSURFACE|SDL_DOUBLEBUF);
-	g_Surfacetmp = SDL_CreateRGBSurface(SDL_HWSURFACE, w, h, 16,  0xF800, 0x7E0, 0x1F, 0);
+        g_Surface=SDL_SetVideoMode(w,h, 0, SDL_HWSURFACE);
+	g_Surfacetmp = SDL_CreateRGBSurface(SDL_HWSURFACE, w, h);
 	    }
 	else
 	    g_Surface=SDL_SetVideoMode(w, h, g_ScreenBpp, SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_FULLSCREEN);
@@ -285,7 +285,7 @@ int JY_LoadPicture(const char* str,int x,int y)
 		}
 
 		SDL_BlitSurface(pic, NULL, g_Surfacetmp, &r);
-		SDL_BlitSurface(g_Surfacetmp, NULL, g_Surface, &r);
+		SDL_BlitSurface(g_Surfacetmp, NULL, g_Surface, NULL);
 
 	}
 	else{
@@ -837,7 +837,7 @@ int BlitSurface(SDL_Surface* lps, int x, int y ,int flag,int value)
             SDL_SetAlpha(tmps,SDL_SRCALPHA,(Uint8)value);
 
 	        SDL_BlitSurface(tmps,NULL,g_Surfacetmp,&rect);
-		SDL_BlitSurface(g_Surfacetmp,NULL,g_Surface,&rect);
+		SDL_BlitSurface(g_Surfacetmp,NULL,g_Surface,NULL);
 
 
 		    SDL_FreeSurface(tmps);
@@ -847,7 +847,7 @@ int BlitSurface(SDL_Surface* lps, int x, int y ,int flag,int value)
             SDL_SetAlpha(lps,SDL_SRCALPHA,(Uint8)value);
 
 	        SDL_BlitSurface(lps,NULL,g_Surfacetmp,&rect);
-		SDL_BlitSurface(g_Surfacetmp,NULL,g_Surface,&rect);
+		SDL_BlitSurface(g_Surfacetmp,NULL,g_Surface,NULL);
  
         }
 	}
@@ -894,7 +894,7 @@ int JY_Background(int x1,int y1,int x2,int y2,int Bright)
     SDL_SetAlpha(lps1,SDL_SRCALPHA,(Uint8)Bright);
 
 	SDL_BlitSurface(lps1,NULL,g_Surfacetmp,&r2);
-	SDL_BlitSurface(g_Surfacetmp,NULL,g_Surface,&r2); 
+	SDL_BlitSurface(g_Surfacetmp,NULL,g_Surface,NULL); 
 
 	SDL_FreeSurface(lps1);
 	return 1;
@@ -973,7 +973,7 @@ int JY_FullScreen()
     SDL_BlitSurface(g_Surfacetmp,NULL,tmpsurface,NULL);
 
 	if(flag & SDL_FULLSCREEN)    //全屏，设置窗口
-        g_Surfacetmp=SDL_SetVideoMode(g_Surfacetmp->w,g_Surfacetmp->h, 0, SDL_SWSURFACE);
+        g_Surfacetmp=SDL_SetVideoMode(g_Surfacetmp->w,g_Surfacetmp->h, 0, SDL_HWSURFACE);
 	else
 	    g_Surfacetmp=SDL_SetVideoMode(g_Surfacetmp->w, g_Surfacetmp->h, g_ScreenBpp, SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_FULLSCREEN);
 
