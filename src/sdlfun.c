@@ -188,7 +188,7 @@ int InitGame(void)
 
     if(g_FullScreen==0){
         g_Surface=SDL_SetVideoMode(w,h, 0, SDL_HWSURFACE);
-	g_Surfacetmp = SDL_CreateRGBSurface(SDL_HWSURFACE, w, h);
+	g_Surfacetmp = SDL_CreateRGBSurface(SDL_HWSURFACE, w, h, 16,  0xF800, 0x7E0, 0x1F, 0);
 	    }
 	else
 	    g_Surface=SDL_SetVideoMode(w, h, g_ScreenBpp, SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_FULLSCREEN);
