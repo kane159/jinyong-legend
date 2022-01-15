@@ -187,7 +187,7 @@ int InitGame(void)
 
 
     if(g_FullScreen==0){
-        g_Surface=SDL_SetVideoMode(w,h, 0, SDL_HWSURFACE);
+        g_Surface=SDL_SetVideoMode(w,h, 0, SDL_HWSURFACE|SDL_DOUBLEBUF);
 	g_Surfacetmp = SDL_CreateRGBSurface(SDL_HWSURFACE, w, h, 16,  0xF800, 0x7E0, 0x1F, 0);
 	    }
 	else
@@ -524,7 +524,7 @@ int JY_SetClip(int x1,int y1,int x2,int y2)
 		}
 
 
-		SDL_SetClipRect(g_Surface,&ClipRect[currentRect]);
+		SDL_SetClipRect(g_Surfacetmp,&ClipRect[currentRect]);
         currentRect=currentRect+1;
 		if(currentRect>=RECTNUM){
 			currentRect=0;
