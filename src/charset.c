@@ -27,6 +27,7 @@ static Uint16 big5_gbk[128][256] ;
 static Uint16 big5_unicode[128][256] ;
 
 extern  SDL_Surface* g_Surface;    //屏幕表面
+extern SDL_Surface* g_Surfacetmp;
 extern int g_Rotate;
 
 //初始化
@@ -161,10 +162,10 @@ int JY_DrawStr(int x, int y, const char *str,int color,int size,const char *font
 
 	 
 	if(g_Rotate==0){
-		rect=g_Surface->clip_rect; 
+		rect=g_Surfacetmp->clip_rect; 
 	}
 	else{
-	    rect=RotateReverseRect(&g_Surface->clip_rect);
+	    rect=RotateReverseRect(&g_Surfacetmp->clip_rect);
 	}
 
     TTF_SizeUNICODE(myfont, (Uint16*)tmp2, &w, &h);
@@ -190,12 +191,14 @@ int JY_DrawStr(int x, int y, const char *str,int color,int size,const char *font
 		rect_dest.x=rect2.x+1;
 		rect_dest.y=rect2.y+1;
 		SDL_SetColors(fontSurface,&c2,1,1);
-		SDL_BlitSurface(fontSurface, NULL, g_Surface, &rect_dest);    //表面写到游戏表面--阴影色
+		SDL_BlitSurface(fontSurface, NULL, g_Surfacetmp, &rect_dest);    //表面写到游戏表面--阴影色
+		SDL_BlitSurface(g_Surfacetmp, NULL, g_Surface, &rect_dest);
 
 		rect_dest.x=rect2.x;
 		rect_dest.y=rect2.y;
 		SDL_SetColors(fontSurface,&c,1,1);
-		SDL_BlitSurface(fontSurface, NULL, g_Surface, &rect_dest);    //表面写到游戏表面 
+		SDL_BlitSurface(fontSurface, NULL, g_Surfacetmp, &rect_dest);    //表面写到游戏表面 
+		SDL_BlitSurface(g_Surfacetmp, NULL, g_Surface, &rect_dest);
 
 	}
 	else if(g_Rotate==1){
@@ -207,12 +210,14 @@ int JY_DrawStr(int x, int y, const char *str,int color,int size,const char *font
 		rect_dest.x=rect2.x-1;
 		rect_dest.y=rect2.y+1;
 		SDL_SetColors(fontSurface,&c2,1,1);
-		SDL_BlitSurface(fontSurface, NULL, g_Surface, &rect_dest);    //表面写到游戏表面 --阴影色
+		SDL_BlitSurface(fontSurface, NULL, g_Surfacetmp, &rect_dest);    //表面写到游戏表面 --阴影色
+		SDL_BlitSurface(g_Surfacetmp, NULL, g_Surface, &rect_dest);
 
 		rect_dest.x=rect2.x;
 		rect_dest.y=rect2.y; 
 		SDL_SetColors(fontSurface,&c,1,1);
-		SDL_BlitSurface(fontSurface, NULL, g_Surface, &rect_dest);    //表面写到游戏表面 
+		SDL_BlitSurface(fontSurface, NULL, g_Surfacetmp, &rect_dest);    //表面写到游戏表面 
+		SDL_BlitSurface(g_Surfacetmp, NULL, g_Surface, &rect_dest);
         
 	}
 
