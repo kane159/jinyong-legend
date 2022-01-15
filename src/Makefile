@@ -1,30 +1,22 @@
-DEBUG = 1
 OBJ = \
 	charset.o jymain.o luafun.o mainmap.o piccache.o sdlfun.o
 
 HEADERS = \
 	config.h list.h luafun.h
-OD_TOOLCHAIN ?= /opt/aarch64-buildroot-linux-gnu_sdk-buildroot/
-CC = $(OD_TOOLCHAIN)bin/aarch64-buildroot-linux-gnu-gcc
-CXX = $(OD_TOOLCHAIN)bin/aarch64-buildroot-linux-gnu-g++
+
+CC = gcc
+CXX = g++
+
 TARGET = jysdllua
 
 BASEFLAGS = -g3 -D_DEBUG=1
 #BASEFLAGS = -s -O3
-SYSROOT     := $(shell $(CC) --print-sysroot)
-SDL_CFLAGS  := $(shell $(SYSROOT)/usr/bin/sdl-config --cflags)
-SDL_LIBS    := $(shell $(SYSROOT)/usr/bin/sdl-config --libs)
 
-CFLAGS = ${BASEFLAGS} $(SDL_CFLAGS)
-ifeq ($(DEBUG),1)
-  CFLAGS += -I/usr/include/lua5.1/
-endif
-LDFLAGS = ${BASEFLAGS} $(SDL_LIBS) -lSDL_image -lSDL_mixer -lSDL_ttf
-ifeq ($(DEBUG),1)
-  LDFLAGS += -llua5.1
-else
-  LDFLAGS += -llua
-endif
+#CFLAGS = ${BASEFLAGS} `sdl-config --cflags` -I./lua/src
+#LDFLAGS = ${BASEFLAGS} `sdl-config --libs` -L./lua/src -lSDL_image -lSDL_mixer -lSDL_ttf -llua5.1
+CFLAGS = ${BASEFLAGS} `sdl-config --cflags` -I/usr/include/lua5.1 
+LDFLAGS = ${BASEFLAGS} `sdl-config --libs` -lSDL_image -lSDL_mixer -lSDL_ttf -llua5.1
+
 #CFLAGS += -DHAS_SDL_MPEG=1
 #LDFLAGS += -lsmpeg
 
@@ -44,4 +36,3 @@ distclean:
 
 %.o:    %.c ${HEADERS}
 	${CC} ${CFLAGS} -c $< -o $@
-
