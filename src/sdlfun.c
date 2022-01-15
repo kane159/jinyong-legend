@@ -17,6 +17,7 @@ static SDL_Rect ClipRect[RECTNUM];        // 当前设置的剪裁矩形
 static int currentRect=0;
 
 extern SDL_Surface* g_Surface;        // 游戏使用的视频表面
+extern SDL_Surface* g_Surfacetmp;
 extern Uint32 g_MaskColor32;      // 透明色
 
 extern int g_Rotate;
@@ -166,7 +167,7 @@ int ExitSDL(void)
 // 转换0RGB到当前屏幕颜色
 Uint32 ConvertColor(Uint32 color){
    Uint8 *p=(Uint8*)&color;
-   return SDL_MapRGB(g_Surface->format,*(p+2),*(p+1),*p);
+   return SDL_MapRGB(g_Surfacetmp->format,*(p+2),*(p+1),*p);
 }    
 
 
@@ -186,7 +187,8 @@ int InitGame(void)
 
 
     if(g_FullScreen==0)
-        g_Surface=SDL_SetVideoMode(w,h, 0, SDL_SWSURFACE);
+        g_Surface=SDL_SetVideoMode(w,h, 0, SDL_HWSURFACE|SDL_DOUBLEBUF);
+	g_Surfacetmp = SDL_CreateRGBSurface(SDL_HWSURFACE, w, h, 16,  0xF800, 0x7E0, 0x1F, 0);
 	else
 	    g_Surface=SDL_SetVideoMode(w, h, g_ScreenBpp, SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_FULLSCREEN);
 
@@ -281,7 +283,8 @@ int JY_LoadPicture(const char* str,int x,int y)
 			r.y=(Sint16)x;
 		}
 
-		SDL_BlitSurface(pic, NULL, g_Surface, &r);
+		SDL_BlitSurface(pic, NULL, g_Surfacetmp, &r);
+		SDL_BlitSurface(g_Surfacetmp, NULL, g_Surface, &r);
 
 	}
 	else{
@@ -322,7 +325,7 @@ int JY_Delay(int x)
 int JY_ShowSlow(int delaytime,int Flag)
 {
   if (Flag) {
-    SDL_FillRect(g_Surface,NULL,0);
+    SDL_FillRect(g_Surfacetmp,NULL,0);
     JY_ShowSurface(0);
     SDL_Delay(400);
   }
@@ -502,7 +505,7 @@ int JY_GetKey()
 int JY_SetClip(int x1,int y1,int x2,int y2)
 {
 	if (x1==0 && y1==0 && x2==0 && y2==0){
-		SDL_SetClipRect(g_Surface,NULL);
+		SDL_SetClipRect(g_Surfacetmp,NULL);
 		currentRect=0;
 	}
     else{
@@ -565,9 +568,9 @@ int JY_DrawRect(int x1,int y1,int x2,int y2,int color)
 	rect1.w=(Uint16)(xmax-xmin+1);
 	rect1.h=(Uint16)(ymax-ymin+1);
  
-    SDL_LockSurface(g_Surface);
-    p=g_Surface->pixels;
-	lpitch=g_Surface->pitch;
+    SDL_LockSurface(g_Surfacetmp);
+    p=g_Surfacetmp->pixels;
+	lpitch=g_Surfacetmp->pitch;
 
 	c=ConvertColor(color);
 
@@ -588,7 +591,7 @@ int JY_DrawRect(int x1,int y1,int x2,int y2,int color)
  	VLine32(y1,y2,x1,c,p,lpitch); 
   	VLine32(y1,y2,x2,c,p,lpitch); 
  
-    SDL_UnlockSurface(g_Surface);
+    SDL_UnlockSurface(g_Surfacetmp);
  
 	return 0;
 }
@@ -604,13 +607,13 @@ void HLine32(int x1,int x2,int y,int color, unsigned char *vbuffer, int lpitch)
     Uint8 *vbuffer2;
 	int bpp;
 
-	bpp=g_Surface->format->BytesPerPixel;
+	bpp=g_Surfacetmp->format->BytesPerPixel;
 
     //手工剪裁
-    min_x=g_Surface->clip_rect.x;
-	min_y=g_Surface->clip_rect.y;
-	max_x=g_Surface->clip_rect.x+g_Surface->clip_rect.w-1;
-    max_y=g_Surface->clip_rect.y+g_Surface->clip_rect.h-1;
+    min_x=g_Surfacetmp->clip_rect.x;
+	min_y=g_Surfacetmp->clip_rect.y;
+	max_x=g_Surfacetmp->clip_rect.x+g_Surfacetmp->clip_rect.w-1;
+    max_y=g_Surfacetmp->clip_rect.y+g_Surfacetmp->clip_rect.h-1;
 
     if (y > max_y || y < min_y)
         return;
@@ -664,12 +667,12 @@ void VLine32(int y1,int y2,int x,int color, unsigned char *vbuffer, int lpitch)
     Uint8 *vbuffer2;
 	int bpp;
 
-	bpp=g_Surface->format->BytesPerPixel;
+	bpp=g_Surfacetmp->format->BytesPerPixel;
 
-    min_x=g_Surface->clip_rect.x;
-	min_y=g_Surface->clip_rect.y;
-	max_x=g_Surface->clip_rect.x+g_Surface->clip_rect.w-1;
-    max_y=g_Surface->clip_rect.y+g_Surface->clip_rect.h-1;
+    min_x=g_Surfacetmp->clip_rect.x;
+	min_y=g_Surfacetmp->clip_rect.y;
+	max_x=g_Surfacetmp->clip_rect.x+g_Surfacetmp->clip_rect.w-1;
+    max_y=g_Surfacetmp->clip_rect.y+g_Surfacetmp->clip_rect.h-1;
 
 
     if (x > max_x || x < min_x)
@@ -727,7 +730,7 @@ int JY_FillColor(int x1,int y1,int x2,int y2,int color)
     SDL_Rect rect;
    
 	if(x1==0 && y1==0 && x2==0 && y2==0){
-        SDL_FillRect(g_Surface,NULL,c);
+        SDL_FillRect(g_Surfacetmp,NULL,c);
 	}
 	else{
 		rect.x=(Sint16)x1;
@@ -735,7 +738,7 @@ int JY_FillColor(int x1,int y1,int x2,int y2,int color)
 		rect.w=(Uint16)(x2-x1);
 		rect.h=(Uint16)(y2-y1);
 
-		SDL_FillRect(g_Surface,&rect,c);
+		SDL_FillRect(g_Surfacetmp,&rect,c);
 	}
 
 	return 0;
@@ -761,7 +764,8 @@ int BlitSurface(SDL_Surface* lps, int x, int y ,int flag,int value)
 	rect.y=(Sint16)y;
 
 	if((flag & 0x2)==0){        // 没有alpla
-        SDL_BlitSurface(lps,NULL,g_Surface,&rect);
+        SDL_BlitSurface(lps,NULL,g_Surfacetmp,&rect);
+	SDL_BlitSurface(g_Surfacetmp,NULL,g_Surface,&rect);
 	}
     else{  // 有alpha
         if( (flag &0x4) || (flag &0x8)){   // 黑白
@@ -831,7 +835,9 @@ int BlitSurface(SDL_Surface* lps, int x, int y ,int flag,int value)
 
             SDL_SetAlpha(tmps,SDL_SRCALPHA,(Uint8)value);
 
-	        SDL_BlitSurface(tmps,NULL,g_Surface,&rect);
+	        SDL_BlitSurface(tmps,NULL,g_Surfacetmp,&rect);
+		SDL_BlitSurface(g_Surfacetmp,NULL,g_Surface,&rect);
+
 
 		    SDL_FreeSurface(tmps);
         }
@@ -839,7 +845,8 @@ int BlitSurface(SDL_Surface* lps, int x, int y ,int flag,int value)
  
             SDL_SetAlpha(lps,SDL_SRCALPHA,(Uint8)value);
 
-	        SDL_BlitSurface(lps,NULL,g_Surface,&rect);
+	        SDL_BlitSurface(lps,NULL,g_Surfacetmp,&rect);
+		SDL_BlitSurface(g_Surfacetmp,NULL,g_Surface,&rect);
  
         }
 	}
@@ -876,8 +883,8 @@ int JY_Background(int x1,int y1,int x2,int y2,int Bright)
 	}
 
 
-	lps1=SDL_CreateRGBSurface(SDL_SWSURFACE,r2.w,r2.h,g_Surface->format->BitsPerPixel,
-		                      g_Surface->format->Rmask,g_Surface->format->Gmask,g_Surface->format->Bmask,0);
+	lps1=SDL_CreateRGBSurface(SDL_SWSURFACE,r2.w,r2.h,g_Surfacetmp->format->BitsPerPixel,
+		                      g_Surfacetmp->format->Rmask,g_Surfacetmp->format->Gmask,g_Surfacetmp->format->Bmask,0);
 
 
  
@@ -885,7 +892,8 @@ int JY_Background(int x1,int y1,int x2,int y2,int Bright)
 
     SDL_SetAlpha(lps1,SDL_SRCALPHA,(Uint8)Bright);
 
-	SDL_BlitSurface(lps1,NULL,g_Surface,&r2); 
+	SDL_BlitSurface(lps1,NULL,g_Surfacetmp,&r2);
+	SDL_BlitSurface(g_Surfacetmp,NULL,g_Surface,&r2); 
 
 	SDL_FreeSurface(lps1);
 	return 1;
@@ -956,20 +964,21 @@ int JY_FullScreen()
     SDL_Surface *tmpsurface;
 	const SDL_VideoInfo *info;
 
-	Uint32 flag=g_Surface->flags;
+	Uint32 flag=g_Surfacetmp->flags;
 
-	tmpsurface=SDL_CreateRGBSurface(SDL_SWSURFACE,g_Surface->w,g_Surface->h,g_Surface->format->BitsPerPixel,
-		                      g_Surface->format->Rmask,g_Surface->format->Gmask,g_Surface->format->Bmask,0);
+	tmpsurface=SDL_CreateRGBSurface(SDL_SWSURFACE,g_Surfacetmp->w,g_Surfacetmp->h,g_Surfacetmp->format->BitsPerPixel,
+		                      g_Surfacetmp->format->Rmask,g_Surfacetmp->format->Gmask,g_Surfacetmp->format->Bmask,0);
 
-    SDL_BlitSurface(g_Surface,NULL,tmpsurface,NULL);
+    SDL_BlitSurface(g_Surfacetmp,NULL,tmpsurface,NULL);
 
 	if(flag & SDL_FULLSCREEN)    //全屏，设置窗口
-        g_Surface=SDL_SetVideoMode(g_Surface->w,g_Surface->h, 0, SDL_SWSURFACE);
+        g_Surfacetmp=SDL_SetVideoMode(g_Surfacetmp->w,g_Surfacetmp->h, 0, SDL_SWSURFACE);
 	else
-	    g_Surface=SDL_SetVideoMode(g_Surface->w, g_Surface->h, g_ScreenBpp, SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_FULLSCREEN);
+	    g_Surfacetmp=SDL_SetVideoMode(g_Surfacetmp->w, g_Surfacetmp->h, g_ScreenBpp, SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_FULLSCREEN);
 
 
-	SDL_BlitSurface(tmpsurface,NULL,g_Surface,NULL);
+	SDL_BlitSurface(tmpsurface,NULL,g_Surfacetmp,NULL);
+	SDL_BlitSurface(g_Surfacetmp,NULL,g_Surface,NULL);
 
     JY_ShowSurface(0);
 
