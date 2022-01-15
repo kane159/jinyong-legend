@@ -51,6 +51,7 @@ static int War_Num;                // 战斗地图层数
 static Sint16 *pWar=NULL;           // 战斗地图数据
 
 extern SDL_Surface* g_Surface;        // 游戏使用的视频表面 
+extern SDL_Surface* g_Surfacetmp;
 
 extern int g_Rotate;
 
@@ -474,10 +475,10 @@ int JY_DrawMMap(int x, int y, int Mypic)
 	SDL_Rect rect;
 	 
 	if(g_Rotate==0){
-		rect=g_Surface->clip_rect;
+		rect=g_Surfacetmp->clip_rect;
 	}
 	else{
-	    rect=RotateReverseRect(&g_Surface->clip_rect);
+	    rect=RotateReverseRect(&g_Surfacetmp->clip_rect);
 	}
 
 	//根据g_Surface的clip来确定循环参数。提高绘制速度
@@ -814,10 +815,10 @@ int JY_DrawSMap(int sceneid,int x, int y,int xoff,int yoff, int Mypic)
 	SDL_Rect rect;
 	 
 	if(g_Rotate==0){
-		rect=g_Surface->clip_rect;
+		rect=g_Surfacetmp->clip_rect;
 	}
 	else{
-	    rect=RotateReverseRect(&g_Surface->clip_rect);
+	    rect=RotateReverseRect(&g_Surfacetmp->clip_rect);
 	}
 
 	//根据g_Surface的剪裁来确定循环参数。提高绘制速度
@@ -1026,10 +1027,10 @@ int JY_DrawWarMap(int flag, int x, int y, int v1,int v2,int v3)
 	SDL_Rect rect;
 	 
 	if(g_Rotate==0){
-		rect=g_Surface->clip_rect;
+		rect=g_Surfacetmp->clip_rect;
 	}
 	else{
-	    rect=RotateReverseRect(&g_Surface->clip_rect);
+	    rect=RotateReverseRect(&g_Surfacetmp->clip_rect);
 	}
 
 	//根据g_Surface的剪裁来确定循环参数。提高绘制速度
