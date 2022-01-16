@@ -303,11 +303,11 @@ int JY_ShowSurface(int flag)
 {
 	if(flag==1){
 		if(currentRect>0){
-			SDL_UpdateRects(g_Surface,currentRect,ClipRect);
+			SDL_UpdateRects(g_Surfacetmp,currentRect,ClipRect);
 		}
 	}
 	else{
-        SDL_UpdateRect(g_Surface,0,0,0,0);
+        SDL_UpdateRect(g_Surfacetmp,0,0,0,0);
 	}
 	return 0;
 }
